@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Sparkles, Edit3, FilePlus } from 'lucide-react';
+import { Sparkles, Edit3, FilePlus, X } from 'lucide-react';
 
 interface NaturalLanguageInputProps {
   onGenerate: (description: string, mode: 'create' | 'modify') => void;
@@ -14,6 +14,7 @@ export function NaturalLanguageInput({
 }: NaturalLanguageInputProps) {
   const [description, setDescription] = useState('');
   const [mode, setMode] = useState<'create' | 'modify'>('create');
+  const [showTips, setShowTips] = useState(true);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -90,15 +91,27 @@ export function NaturalLanguageInput({
         </button>
       </form>
 
-      <div className="nl-input-tips">
-        <h3>Tips:</h3>
-        <ul>
-          <li>Be specific about endpoints and data models</li>
-          <li>Mention authentication if needed</li>
-          <li>Include example use cases</li>
-          <li>Specify response formats (JSON, XML)</li>
-        </ul>
-      </div>
+      {showTips && (
+        <div className="nl-input-tips">
+          <div className="nl-input-tips-header">
+            <h3>Tips:</h3>
+            <button 
+              type="button" 
+              className="close-tips-button"
+              onClick={() => setShowTips(false)}
+              aria-label="Close tips"
+            >
+              <X size={16} />
+            </button>
+          </div>
+          <ul>
+            <li>Be specific about endpoints and data models</li>
+            <li>Mention authentication if needed</li>
+            <li>Include example use cases</li>
+            <li>Specify response formats (JSON, XML)</li>
+          </ul>
+        </div>
+      )}
     </div>
   );
 }

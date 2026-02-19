@@ -53,3 +53,31 @@
   border-left: 4px solid var(--error);
   font-weight: 500;
 }
+
+/* Responsive layout for smaller screens */
+@media (max-width: 768px) {
+  .editor-page {
+    height: auto;
+    min-height: 100%;
+  }
+
+  .editor-container {
+    flex-direction: column;
+    overflow: visible;
+  }
+
+  .editor-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border-primary);
+    overflow-y: visible;
+    height: auto;
+  }
+
+  .editor-main {
+    flex: none;
+    height: auto;
+    min-height: 60vh;
+    overflow: visible;
+  }
+}
