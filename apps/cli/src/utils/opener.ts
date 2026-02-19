@@ -134,47 +134,26 @@ async function openInTui(content: string, spec: OpenAPISpec): Promise<void> {
         // Verify it actually works
         if (!isOpenApiTuiInstalled()) {
           spinner.warn('Installation completed but openapi-tui not found in PATH');
-          console.log(chalk.yellow('\nYou may need to restart your terminal or add ~/.local/bin to your PATH'));
+          console.log(chalk.yellow('\nYou may need to restart your terminal or add ~/.cargo/bin to your PATH'));
           return;
         }
       } catch (error) {
         spinner.fail('Installation failed');
-        console.log(chalk.yellow('\n💡 The pre-built binary may not work on your system.'));
-        console.log(chalk.dim('This often happens due to GLIBC version incompatibility.\n'));
-        
-        const { tryCargo } = await inquirer.prompt([
-          {
-            type: 'confirm',
-            name: 'tryCargo',
-            message: 'Would you like to try installing with cargo instead?',
-            default: true,
-          },
-        ]);
-        
-        if (tryCargo) {
-          const cargoSpinner = ora('Installing openapi-tui with cargo...').start();
-          try {
-            execSync('cargo install openapi-tui', { stdio: 'inherit' });
-            cargoSpinner.succeed('openapi-tui installed successfully!');
-          } catch (cargoError) {
-            cargoSpinner.fail('Failed to install with cargo');
-            console.error(chalk.red('\nError:'), cargoError instanceof Error ? cargoError.message : 'Unknown error');
-            return;
-          }
-        } else {
-          return;
-        }
+        console.log(chalk.yellow('\n💡 See the error above for details.'));
+        return;
       }
     } else if (installMethod === 'cargo') {
       const spinner = ora('Installing openapi-tui with cargo...').start();
+      console.log(chalk.dim('\nThis will compile from source and may take a few minutes...'));
       try {
-        execSync('cargo install openapi-tui', { stdio: 'inherit' });
+        // Use git version to avoid v0.10.2 release build bug
+        execSync('cargo install openapi-tui --git https://github.com/zaghaghi/openapi-tui.git', { stdio: 'inherit' });
         spinner.succeed('openapi-tui installed successfully!');
       } catch (error) {
-        spinner.fail('Failed to install openapi-tui');
+        spinner.fail('Failed to install with cargo');
         console.error(chalk.red('\nError:'), error instanceof Error ? error.message : 'Unknown error');
-        console.log(chalk.dim('\nTry the quick install script instead:'));
-        console.log(chalk.white('  bash scripts/install-openapi-tui.sh'));
+        console.log(chalk.dim('\nMake sure you have Rust installed:'));
+        console.log(chalk.white('  curl --proto \'=https\' --tlsv1.2 -sSf https://sh.rustup.rs | sh'));
         return;
       }
     } else {
