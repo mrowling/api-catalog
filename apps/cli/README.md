@@ -30,6 +30,9 @@ pnpm start generate "A blog API with posts and comments" -o blog.yaml
 
 # Validate a spec
 pnpm start validate ./api.yaml
+
+# View a spec in terminal UI (requires oq)
+pnpm start view ./api.yaml
 ```
 
 ## Browse Command (Interactive)
@@ -44,12 +47,12 @@ pnpm start browse
 1. Asks for a GitHub organization name
 2. Shows all OpenAPI specs found
 3. Lets you pick one
-4. Opens it how you want (editor, openapi-tui, file, or console)
+4. Opens it how you want (editor, oq, file, or console)
 5. Loops back to menu for more actions
 
 **Opening options:**
 - **$EDITOR** - Opens in vi/vim/nano/etc
-- **openapi-tui** - Beautiful TUI viewer (auto-installs if needed)
+- **oq** - Beautiful TUI viewer (requires separate installation)
 - **Save to file** - Downloads to your computer
 - **Print** - Shows in terminal
 
@@ -89,22 +92,26 @@ pnpm start validate ./api.yaml
 pnpm start validate ./openapi.json
 ```
 
-## Installing openapi-tui (Optional)
+## Installing oq (Optional)
 
-For a better viewing experience, install [openapi-tui](https://github.com/zaghaghi/openapi-tui).
-
-The CLI will offer to install it automatically when needed, or install manually:
+For a better viewing experience in the browse command and view command, install [oq](https://github.com/plutov/oq):
 
 ```bash
-# Quick install (recommended)
-bash apps/cli/scripts/install-openapi-tui.sh
+# With Go
+go install github.com/plutov/oq@latest
 
-# Or with cargo
-cargo install openapi-tui --git https://github.com/zaghaghi/openapi-tui.git
+# With Homebrew (macOS/Linux)
+brew install plutov/tap/oq
 
-# Or with Homebrew (macOS)
-brew install openapi-tui
+# On Arch Linux (AUR)
+yay -S oq-openapi-viewer-git
 ```
+
+**Features:**
+- Interactive TUI for browsing OpenAPI specs
+- Supports all OpenAPI 3.x versions (3.0, 3.1, 3.2)
+- Both YAML and JSON formats
+- Keyboard shortcuts (press `?` for help)
 
 ## GitHub Authentication (Optional)
 

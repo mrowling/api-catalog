@@ -12,11 +12,11 @@ import { tmpdir } from 'os';
 import type { OpenAPISpec, GitHubService } from '../services/github.js';
 
 /**
- * Check if openapi-tui is installed
+ * Check if oq is installed
  */
-function isOpenApiTuiInstalled(): boolean {
+function isOqInstalled(): boolean {
   try {
-    execSync('which openapi-tui', { stdio: 'ignore' });
+    execSync('which oq', { stdio: 'ignore' });
     return true;
   } catch {
     return false;
@@ -24,14 +24,14 @@ function isOpenApiTuiInstalled(): boolean {
 }
 
 export async function openSpec(spec: OpenAPISpec, githubService: GitHubService): Promise<void> {
-  const tuiInstalled = isOpenApiTuiInstalled();
+  const oqInstalled = isOqInstalled();
   
   const choices = [
     { name: 'Open in $EDITOR', value: 'editor' },
     { 
-      name: tuiInstalled ? 'Open in openapi-tui' : 'Open in openapi-tui (not installed)', 
-      value: 'tui',
-      disabled: !tuiInstalled ? 'Run: cargo install openapi-tui' : false
+      name: oqInstalled ? 'Open in oq' : 'Open in oq (not installed)', 
+      value: 'oq',
+      disabled: !oqInstalled ? 'Run: go install github.com/plutov/oq@latest' : false
     },
     { name: 'Save to file', value: 'save' },
     { name: 'Print to console', value: 'print' },
@@ -58,8 +58,8 @@ export async function openSpec(spec: OpenAPISpec, githubService: GitHubService):
     case 'editor':
       await openInEditor(content, spec);
       break;
-    case 'tui':
-      await openInTui(content, spec);
+    case 'oq':
+      await openInOq(content, spec);
       break;
     case 'save':
       await saveToFile(content, spec);
@@ -96,95 +96,46 @@ async function openInEditor(content: string, spec: OpenAPISpec): Promise<void> {
   });
 }
 
-async function openInTui(content: string, spec: OpenAPISpec): Promise<void> {
+async function openInOq(content: string, spec: OpenAPISpec): Promise<void> {
   // Double-check it's installed (in case user somehow got here)
-  if (!isOpenApiTuiInstalled()) {
-    console.log(chalk.yellow('\n⚠️  openapi-tui is not installed'));
-    console.log(chalk.dim('\nTo install openapi-tui:'));
-    console.log(chalk.cyan('\n  # Quick install (recommended)'));
-    console.log(chalk.white('  bash scripts/install-openapi-tui.sh'));
-    console.log(chalk.cyan('\n  # With Cargo (Rust)'));
-    console.log(chalk.white('  cargo install openapi-tui'));
-    console.log(chalk.cyan('\n  # On macOS with Homebrew'));
-    console.log(chalk.white('  brew install openapi-tui'));
+  if (!isOqInstalled()) {
+    console.log(chalk.yellow('\n⚠️  oq is not installed'));
+    console.log(chalk.dim('\nTo install oq:'));
+    console.log(chalk.cyan('\n  # With Go'));
+    console.log(chalk.white('  go install github.com/plutov/oq@latest'));
+    console.log(chalk.cyan('\n  # With Homebrew (macOS/Linux)'));
+    console.log(chalk.white('  brew install plutov/tap/oq'));
     console.log(chalk.cyan('\n  # On Arch Linux'));
-    console.log(chalk.white('  yay -S openapi-tui'));
-    console.log(chalk.dim('\nMore info: https://github.com/zaghaghi/openapi-tui'));
-    
-    const { installMethod } = await inquirer.prompt([
-      {
-        type: 'list',
-        name: 'installMethod',
-        message: 'Would you like to install it now?',
-        choices: [
-          { name: 'Yes, use quick install script', value: 'script' },
-          { name: 'Yes, use cargo install', value: 'cargo' },
-          { name: 'No, I\'ll install it manually', value: 'none' },
-        ],
-      },
-    ]);
-
-    if (installMethod === 'script') {
-      const spinner = ora('Installing openapi-tui...').start();
-      try {
-        const scriptPath = join(__dirname, '../../scripts/install-openapi-tui.sh');
-        execSync(`bash "${scriptPath}"`, { stdio: 'inherit' });
-        spinner.succeed('openapi-tui installed successfully!');
-        
-        // Verify it actually works
-        if (!isOpenApiTuiInstalled()) {
-          spinner.warn('Installation completed but openapi-tui not found in PATH');
-          console.log(chalk.yellow('\nYou may need to restart your terminal or add ~/.cargo/bin to your PATH'));
-          return;
-        }
-      } catch (error) {
-        spinner.fail('Installation failed');
-        console.log(chalk.yellow('\n💡 See the error above for details.'));
-        return;
-      }
-    } else if (installMethod === 'cargo') {
-      const spinner = ora('Installing openapi-tui with cargo...').start();
-      console.log(chalk.dim('\nThis will compile from source and may take a few minutes...'));
-      try {
-        // Use git version to avoid v0.10.2 release build bug
-        execSync('cargo install openapi-tui --git https://github.com/zaghaghi/openapi-tui.git', { stdio: 'inherit' });
-        spinner.succeed('openapi-tui installed successfully!');
-      } catch (error) {
-        spinner.fail('Failed to install with cargo');
-        console.error(chalk.red('\nError:'), error instanceof Error ? error.message : 'Unknown error');
-        console.log(chalk.dim('\nMake sure you have Rust installed:'));
-        console.log(chalk.white('  curl --proto \'=https\' --tlsv1.2 -sSf https://sh.rustup.rs | sh'));
-        return;
-      }
-    } else {
-      return;
-    }
+    console.log(chalk.white('  yay -S oq-openapi-viewer-git'));
+    console.log(chalk.dim('\nMore info: https://github.com/plutov/oq'));
+    return;
   }
 
   const tempFile = join(tmpdir(), `${spec.repoName}-${spec.filePath.replace(/\//g, '-')}`);
   
   writeFileSync(tempFile, content);
   
-  console.log(chalk.dim('\nOpening in openapi-tui...'));
+  console.log(chalk.dim('\nOpening in oq...'));
+  console.log(chalk.dim('Press ? for help, q to quit\n'));
   
-  const tuiProcess = spawn('openapi-tui', [tempFile], {
+  const oqProcess = spawn('oq', [tempFile], {
     stdio: 'inherit',
-    shell: true,
+    shell: false,
   });
 
   await new Promise((resolve, reject) => {
-    tuiProcess.on('exit', (code) => {
-      if (code === 0) {
-        console.log(chalk.green('\n✓ openapi-tui closed'));
+    oqProcess.on('exit', (code) => {
+      if (code === 0 || code === null) {
+        console.log(chalk.green('\n✓ oq closed'));
         resolve(null);
       } else {
-        reject(new Error(`openapi-tui exited with code ${code}`));
+        reject(new Error(`oq exited with code ${code}`));
       }
     });
-    tuiProcess.on('error', (error) => {
+    oqProcess.on('error', (error) => {
       if ('code' in error && error.code === 'ENOENT') {
-        console.error(chalk.red('\n✗ openapi-tui not found'));
-        console.log(chalk.dim('Install it from: https://github.com/zaghaghi/openapi-tui'));
+        console.error(chalk.red('\n✗ oq not found'));
+        console.log(chalk.dim('Install it from: https://github.com/plutov/oq'));
         reject(error);
       } else {
         reject(error);

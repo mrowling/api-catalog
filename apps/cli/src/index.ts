@@ -10,6 +10,7 @@ import { validateCommand } from './commands/validate.js';
 import { browseCommand } from './commands/browse.js';
 import { listCommand } from './commands/list.js';
 import { openCommand } from './commands/open.js';
+import { viewCommand } from './commands/view.js';
 
 const program = new Command();
 
@@ -54,5 +55,19 @@ program
   .argument('<org>', 'GitHub organization name')
   .argument('<index>', 'Spec index from list command (1-based)')
   .action(openCommand);
+
+// View command (TUI viewer using oq)
+program
+  .command('view [file]')
+  .description('View an OpenAPI spec in a terminal UI (requires oq)')
+  .action((file?: string) => {
+    if (!file || file === '-') {
+      // Read from stdin
+      viewCommand();
+    } else {
+      // Read from file
+      viewCommand(file);
+    }
+  });
 
 program.parse();
