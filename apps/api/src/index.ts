@@ -3,9 +3,8 @@
  * Hono-based API server for OpenAPI validation and Copilot integration
  */
 
-// Load environment variables from .env file
-import { config as loadEnv } from 'dotenv';
-loadEnv();
+// IMPORTANT: Load environment variables FIRST before any other imports
+import './env.js';
 
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
