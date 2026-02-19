@@ -3,6 +3,10 @@
  * Hono-based API server for OpenAPI validation and Copilot integration
  */
 
+// Load environment variables from .env file
+import { config as loadEnv } from 'dotenv';
+loadEnv();
+
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
@@ -66,6 +70,10 @@ const port = process.env.PORT ? parseInt(process.env.PORT) : 3001;
 console.log(`🚀 Starting Natural Language OpenAPI Editor API...`);
 console.log(`📡 Server running on http://localhost:${port}`);
 console.log(`📝 API documentation available at http://localhost:${port}/`);
+console.log(`🤖 AI Provider: ${process.env.AI_PROVIDER || 'github-copilot'}`);
+console.log(`🎯 AI Model: ${process.env.AI_MODEL || 'default'}`);
+console.log(`🔑 OpenRouter API Key: ${process.env.OPENROUTER_API_KEY ? 'SET ✓' : 'NOT SET ✗'}`);
+console.log('');
 
 serve({
   fetch: app.fetch,
