@@ -2,14 +2,32 @@
 
 OpenRouter is a unified API for accessing multiple AI models from different providers. This guide will help you set up OpenRouter as your AI provider.
 
+## TL;DR - Quick Start (Completely Free)
+
+```bash
+# 1. Get API key at https://openrouter.ai/keys (no credit card needed)
+
+# 2. Create apps/api/.env:
+AI_PROVIDER=openrouter
+OPENROUTER_API_KEY=sk-or-v1-YOUR_KEY_HERE
+AI_MODEL=meta-llama/llama-3.3-70b-instruct:free
+
+# 3. Start server:
+cd apps/api && pnpm run dev
+
+# 4. Open http://localhost:5173 and start generating!
+# You get 50 free requests per day with high-quality AI models.
+```
+
 ## What is OpenRouter?
 
 [OpenRouter](https://openrouter.ai/) provides:
-- Access to 100+ AI models through a single API
+- Access to 300+ AI models through a single API
 - Models from OpenAI, Anthropic, Google, Meta, and more
-- Pay-per-use pricing with no subscriptions
+- **25+ free models** with no cost (50 requests/day limit on free plan)
+- Pay-per-use pricing with no subscriptions for premium models
 - Automatic fallback to alternative models
-- Free tier available for testing
+- No credit card required to start
 
 ## Getting Started
 
@@ -25,6 +43,8 @@ OpenRouter is a unified API for accessing multiple AI models from different prov
 
 Add these variables to your `apps/api/.env` file:
 
+**For Free Models (Recommended to Start):**
+
 ```bash
 # Set OpenRouter as your AI provider
 AI_PROVIDER=openrouter
@@ -32,32 +52,72 @@ AI_PROVIDER=openrouter
 # Your OpenRouter API key (required)
 OPENROUTER_API_KEY=your_openrouter_api_key_here
 
-# Optional: Default model to use
-AI_MODEL=openai/gpt-4-turbo
+# Use a free model (no cost, 50 requests/day limit)
+AI_MODEL=meta-llama/llama-3.3-70b-instruct:free
 
 # Optional: Site information for rankings on OpenRouter
 OPENROUTER_SITE_URL=https://yoursite.com
 OPENROUTER_SITE_NAME=Your App Name
 ```
 
+**For Premium Models (Requires Credits):**
+
+```bash
+AI_PROVIDER=openrouter
+OPENROUTER_API_KEY=your_openrouter_api_key_here
+AI_MODEL=openai/gpt-4-turbo  # or any paid model
+```
+
 ### 3. Choose a Model
 
-OpenRouter supports many models. Popular choices:
+OpenRouter supports 300+ models. Here are recommendations for OpenAPI generation:
 
-**For OpenAPI Generation:**
-- `openai/gpt-4-turbo` - Best quality, higher cost
-- `openai/gpt-3.5-turbo` - Good balance, lower cost (default)
-- `anthropic/claude-3-opus` - Excellent for structured output
-- `anthropic/claude-3-sonnet` - Good balance, fast
-- `google/gemini-pro` - Fast, competitive quality
-- `meta-llama/llama-3-70b-instruct` - Open source, good quality
+**Free Models (No Cost, 50 requests/day):**
 
-**Cost Considerations:**
+To use free models, append `:free` to the model name:
+
+- `meta-llama/llama-3.3-70b-instruct:free` - **Recommended for free tier**, excellent quality
+- `google/gemini-2.0-flash-exp:free` - Very fast, good quality
+- `meta-llama/llama-3.1-405b-instruct:free` - Highest quality free model
+- `qwen/qvq-72b-preview:free` - Good for structured output
+- `google/gemini-flash-1.5:free` - Fast and reliable
+
+**Premium Models (Pay-per-use):**
+
+- `openai/gpt-4-turbo` - Best quality, higher cost (~$10/1M tokens)
+- `anthropic/claude-3-5-sonnet` - Excellent for structured output (~$3/1M tokens)
+- `openai/gpt-3.5-turbo` - Good balance, lower cost (~$0.50/1M tokens)
+- `google/gemini-pro-1.5` - Fast, competitive quality (~$1.25/1M tokens)
+
+**Rate Limits:**
+- **Free plan**: 50 requests/day, 20 requests/minute on free models
+- **Pay-as-you-go** (with $10+ credits): No limits on paid models, 1000 requests/day on free models
 - Check current pricing at [https://openrouter.ai/models](https://openrouter.ai/models)
-- Free tier available with rate limits
-- Pay-per-use based on tokens consumed
 
-### 4. Test Your Configuration
+### 4. Quick Start with Free Models
+
+**To use OpenRouter completely free:**
+
+1. Get your API key at [https://openrouter.ai/keys](https://openrouter.ai/keys) (no credit card required)
+
+2. Create `apps/api/.env` file:
+```bash
+AI_PROVIDER=openrouter
+OPENROUTER_API_KEY=sk-or-v1-... # your actual key
+AI_MODEL=meta-llama/llama-3.3-70b-instruct:free
+```
+
+3. Start the server:
+```bash
+cd apps/api
+pnpm run dev
+```
+
+4. Open the web UI at [http://localhost:5173](http://localhost:5173)
+
+You now have access to a high-quality AI model with **50 free requests per day**!
+
+### 5. Test Your Configuration
 
 Start the API server:
 

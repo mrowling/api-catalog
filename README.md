@@ -56,15 +56,22 @@ pnpm run build
    
    See [docs/COPILOT_SETUP.md](docs/COPILOT_SETUP.md) for detailed setup instructions.
 
-   **Option B: OpenRouter** (free tier available, 100+ models)
+   **Option B: OpenRouter** (25+ free models, 300+ total models)
    
-   Get your API key at https://openrouter.ai/keys
+   **Start completely free** (no credit card required):
    
-   Add to `apps/api/.env`:
+   1. Get your API key at https://openrouter.ai/keys
+   2. Add to `apps/api/.env`:
+   
    ```bash
    AI_PROVIDER=openrouter
    OPENROUTER_API_KEY=your_api_key_here
-   AI_MODEL=openai/gpt-4-turbo  # or any supported model
+   AI_MODEL=meta-llama/llama-3.3-70b-instruct:free  # Free tier (50 req/day)
+   ```
+   
+   Or use premium models (requires credits):
+   ```bash
+   AI_MODEL=openai/gpt-4-turbo  # Pay-per-use
    ```
    
    See [docs/OPENROUTER_SETUP.md](docs/OPENROUTER_SETUP.md) for detailed setup instructions.

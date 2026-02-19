@@ -29,7 +29,7 @@ export class OpenRouterProvider implements AIProvider {
 
   constructor(config: OpenRouterConfig) {
     this.apiKey = config.apiKey;
-    this.defaultModel = config.defaultModel || 'openai/gpt-3.5-turbo';
+    this.defaultModel = config.defaultModel || 'openrouter/free';
     this.siteUrl = config.siteUrl;
     this.siteName = config.siteName;
     this.baseUrl = config.baseUrl || 'https://openrouter.ai/api/v1';
@@ -103,7 +103,7 @@ export class OpenRouterProvider implements AIProvider {
       if (!response.ok) {
         const errorText = await response.text();
         let errorMessage = `OpenRouter API error (${response.status})`;
-        
+
         try {
           const errorData = JSON.parse(errorText);
           if (errorData.error?.message) {
@@ -140,11 +140,11 @@ export class OpenRouterProvider implements AIProvider {
       };
     } catch (error) {
       console.error('OpenRouter completion error:', error);
-      
+
       if (error instanceof Error) {
         throw error;
       }
-      
+
       throw new Error(
         `OpenRouter completion failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
