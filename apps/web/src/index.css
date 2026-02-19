@@ -1,0 +1,344 @@
+/* ===================================
+   ACCESSIBLE DARK MODE COLOR SYSTEM
+   WCAG AAA compliant (7:1 contrast)
+   =================================== */
+
+:root {
+  /* Font System */
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.6;
+  font-weight: 400;
+  
+  /* Dark Mode Colors - WCAG AAA Compliant - Enhanced */
+  /* Rich, deep backgrounds with subtle blue tint for less eye strain */
+  --bg-primary: #0a0e13;
+  --bg-secondary: #13181f;
+  --bg-tertiary: #1c2530;
+  --bg-elevated: #242d3a;
+  --bg-hover: #2d3847;
+  
+  /* High contrast text with warm tones for readability */
+  --text-primary: #f4f6f9;
+  --text-secondary: #cbd2db;
+  --text-tertiary: #8d96a3;
+  --text-disabled: #6a7280;
+  
+  /* Borders with better visibility */
+  --border-primary: #354050;
+  --border-secondary: #252d38;
+  --border-focus: #5ba3ff;
+  --border-hover: #4a5568;
+  
+  /* Accent Colors - Enhanced vibrancy while maintaining accessibility */
+  --accent-primary: #5ba3ff;
+  --accent-primary-hover: #7ebcff;
+  --accent-primary-active: #3d8fef;
+  --accent-primary-subtle: rgba(91, 163, 255, 0.15);
+  
+  --accent-secondary: #a87ff0;
+  --accent-secondary-hover: #bb95f7;
+  --accent-secondary-subtle: rgba(168, 127, 240, 0.15);
+  
+  /* Status Colors - Richer and more visible */
+  --success: #47c75e;
+  --success-bg: #0d3318;
+  --success-subtle: rgba(71, 199, 94, 0.15);
+  --warning: #e8aa2d;
+  --warning-bg: #3d2a0a;
+  --warning-subtle: rgba(232, 170, 45, 0.15);
+  --error: #ff5f5a;
+  --error-bg: #3d0d0d;
+  --error-subtle: rgba(255, 95, 90, 0.15);
+  
+  /* Focus Ring - Higher visibility with multiple styles */
+  --focus-ring: 0 0 0 3px rgba(91, 163, 255, 0.45);
+  --focus-ring-error: 0 0 0 3px rgba(255, 95, 90, 0.45);
+  --focus-ring-success: 0 0 0 3px rgba(71, 199, 94, 0.45);
+  
+  /* Shadows - Deeper for better elevation perception */
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.6);
+  --shadow-md: 0 4px 8px -1px rgba(0, 0, 0, 0.7);
+  --shadow-lg: 0 12px 20px -4px rgba(0, 0, 0, 0.8);
+  --shadow-glow: 0 0 20px rgba(91, 163, 255, 0.15);
+  
+  /* Animation */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Set color scheme for browser UI */
+  color-scheme: dark;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  
+  /* Font rendering */
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===================================
+   BASE STYLES
+   =================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* ===================================
+   TYPOGRAPHY
+   =================================== */
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+h1 {
+  font-size: 2.5rem;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+p {
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+/* ===================================
+   LINKS - WCAG AAA Accessible
+   =================================== */
+
+a {
+  color: var(--accent-primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color var(--transition-fast);
+  outline: none;
+}
+
+a:hover {
+  color: var(--accent-primary-hover);
+  text-decoration: underline;
+}
+
+a:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+a:active {
+  color: var(--accent-primary-active);
+}
+
+/* ===================================
+   BUTTONS - Accessible & Consistent
+   =================================== */
+
+button {
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
+  padding: 0.625rem 1.25rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-primary);
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  outline: none;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle gradient overlay on hover */
+button:hover:not(:disabled)::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(91, 163, 255, 0.05), transparent);
+  pointer-events: none;
+}
+
+button:hover:not(:disabled) {
+  background-color: var(--bg-hover);
+  border-color: var(--border-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+button:focus-visible {
+  box-shadow: var(--focus-ring);
+  border-color: var(--accent-primary);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Primary Button Style */
+button.primary {
+  background-color: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: var(--bg-primary);
+  font-weight: 600;
+}
+
+button.primary:hover:not(:disabled) {
+  background-color: var(--accent-primary-hover);
+  border-color: var(--accent-primary-hover);
+  box-shadow: var(--shadow-md), var(--shadow-glow);
+}
+
+button.primary:hover:not(:disabled)::before {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), transparent);
+}
+
+/* ===================================
+   FORM ELEMENTS - Accessible
+   =================================== */
+
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  transition: all var(--transition-base);
+  outline: none;
+}
+
+input:hover,
+textarea:hover,
+select:hover {
+  border-color: var(--border-focus);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--accent-primary);
+  box-shadow: var(--focus-ring);
+  background-color: var(--bg-tertiary);
+}
+
+input:disabled,
+textarea:disabled,
+select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: var(--bg-secondary);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* ===================================
+   ACCESSIBILITY HELPERS
+   =================================== */
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Focus visible styles for keyboard navigation */
+*:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --border-primary: #ffffff;
+    --text-primary: #ffffff;
+    --bg-primary: #000000;
+  }
+}
+
+/* ===================================
+   SCROLLBAR - Dark Mode Styled
+   =================================== */
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bg-elevated);
+  border-radius: 6px;
+  border: 2px solid var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-primary);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--bg-elevated) var(--bg-secondary);
+}
+

@@ -1,0 +1,33 @@
+{
+  "name": "@ai-openapi/shared",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@apidevtools/swagger-parser": "^12.1.0",
+    "@github/copilot-sdk": "^0.1.25",
+    "ajv": "^8.18.0",
+    "ajv-draft-04": "^1.0.0",
+    "js-yaml": "^4.1.0",
+    "yaml": "^2.8.2",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "typescript": "~5.9.3"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "input": "../../openapi.yaml",
+  "output": "src/generated/api",
+  "client": "@hey-api/client-fetch",
+  "services": {
+    "asClass": true
+  },
+  "types": {
+    "enums": "javascript"
+  },
+  "schemas": false
+}

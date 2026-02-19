@@ -1,0 +1,30 @@
+{
+  "name": "@ai-openapi/cli",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "bin": {
+    "nl-openapi": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "bun dist/index.js",
+    "dev": "bun --watch src/index.ts",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ai-openapi/shared": "workspace:*",
+    "@github/copilot-sdk": "^0.1.25",
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "inquirer": "^12.1.0",
+    "js-yaml": "^4.1.0",
+    "ora": "^8.1.1"
+  },
+  "devDependencies": {
+    "@types/inquirer": "^9.0.7",
+    "@types/js-yaml": "^4.0.9",
+    "typescript": "~5.9.3"
+  }
+}

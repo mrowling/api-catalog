@@ -1,0 +1,395 @@
+.github-specs-browser {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-md);
+}
+
+.github-specs-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.github-specs-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--text-primary);
+}
+
+.github-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.collapse-button {
+  background: transparent;
+  border: 1px solid var(--border-primary);
+  cursor: pointer;
+  font-size: 1rem;
+  color: var(--text-secondary);
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  transition: all var(--transition-base);
+  min-width: 44px; /* WCAG touch target size */
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.collapse-button:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--accent-primary);
+}
+
+.collapse-button:focus-visible {
+  box-shadow: var(--focus-ring);
+  border-color: var(--accent-primary);
+}
+
+.github-search {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.github-org-input {
+  flex: 1;
+  min-width: 200px;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  font-size: 1rem;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  transition: all var(--transition-base);
+}
+
+.github-org-input:hover {
+  border-color: var(--border-focus);
+}
+
+.github-org-input:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: var(--focus-ring);
+  background-color: var(--bg-elevated);
+}
+
+.github-org-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.github-org-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.search-button,
+.refresh-button {
+  padding: 0.75rem 1.25rem;
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all var(--transition-base);
+  min-height: 44px; /* WCAG touch target */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.search-button:hover:not(:disabled),
+.refresh-button:hover:not(:disabled) {
+  background: var(--bg-elevated);
+  border-color: var(--accent-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.search-button:focus-visible,
+.refresh-button:focus-visible {
+  box-shadow: var(--focus-ring);
+  border-color: var(--accent-primary);
+}
+
+.search-button:active:not(:disabled),
+.refresh-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.search-button:disabled,
+.refresh-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.hard-refresh-button {
+  background: linear-gradient(135deg, var(--accent-secondary) 0%, #8b5cf6 100%);
+  color: var(--bg-primary);
+  border-color: var(--accent-secondary);
+  font-weight: 600;
+}
+
+.hard-refresh-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--accent-secondary-hover) 0%, #a78bfa 100%);
+  border-color: var(--accent-secondary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(163, 113, 247, 0.4);
+}
+
+.hard-refresh-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.hard-refresh-button:disabled {
+  background: var(--text-disabled);
+  border-color: var(--text-disabled);
+  opacity: 0.5;
+}
+
+.github-error {
+  padding: 1rem;
+  background: var(--error-bg);
+  border: 1px solid var(--error);
+  border-left: 4px solid var(--error);
+  border-radius: 6px;
+  color: var(--error);
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: start;
+  gap: 0.5rem;
+  /* Ensure error text is readable - WCAG AAA */
+  font-weight: 500;
+}
+
+.github-last-updated {
+  font-size: 0.875rem;
+  color: var(--text-tertiary);
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+
+/* Local Search Filter */
+.local-search-container {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.local-search-input {
+  width: 100%;
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  transition: all var(--transition-base);
+}
+
+.local-search-input:hover {
+  border-color: var(--border-hover);
+}
+
+.local-search-input:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: var(--focus-ring);
+  background-color: var(--bg-elevated);
+}
+
+.local-search-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.clear-search-button {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  padding: 0.5rem;
+  font-size: 1rem;
+  line-height: 1;
+  transition: color var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  min-height: 32px;
+}
+
+.clear-search-button:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+  border-radius: 4px;
+}
+
+.clear-search-button:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+
+.github-specs-list {
+  max-height: 500px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.specs-count {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.spec-item {
+  padding: 1.25rem;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  margin-bottom: 0.75rem;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  position: relative;
+}
+
+.spec-item:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-hover);
+}
+
+.spec-item:focus-within {
+  box-shadow: var(--focus-ring);
+  border-color: var(--accent-primary);
+}
+
+.spec-item:active {
+  /* No transform on click - just stays in place */
+}
+
+.spec-repo-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.spec-file-path {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+  margin-bottom: 0.75rem;
+  word-break: break-all;
+}
+
+.spec-github-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+  color: var(--accent-primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all var(--transition-fast);
+  padding: 0.25rem 0;
+}
+
+.spec-github-link:hover {
+  color: var(--accent-primary-hover);
+  text-decoration: underline;
+}
+
+.spec-github-link:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.github-empty {
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 1rem;
+  background: var(--bg-tertiary);
+  border: 2px dashed var(--border-primary);
+  border-radius: 8px;
+}
+
+/* Loading state accessibility */
+.github-specs-browser[aria-busy="true"] {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .github-search {
+    flex-wrap: wrap;
+  }
+  
+  .github-org-input {
+    flex: 1 1 100%;
+    min-width: 100%;
+  }
+  
+  .search-button,
+  .refresh-button {
+    flex: 1 1 calc(50% - 0.375rem);
+    justify-content: center;
+    min-width: 0;
+    font-size: 0;
+  }
+  
+  /* Show only icons on mobile, hide text */
+  .search-button span,
+  .refresh-button span {
+    font-size: 1.25rem;
+  }
+}
+
+/* For very small screens, make buttons slightly smaller */
+@media (max-width: 480px) {
+  .search-button,
+  .refresh-button {
+    padding: 0.75rem 0.5rem;
+  }
+}
+
+/* Print styles */
+@media print {
+  .github-specs-browser {
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+  
+  .collapse-button,
+  .search-button,
+  .refresh-button {
+    display: none;
+  }
+}
+

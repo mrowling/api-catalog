@@ -1,0 +1,525 @@
+openapi: 3.1.0
+info:
+  title: Natural Language OpenAPI Editor API
+  description: |
+    An AI-powered API for generating and validating OpenAPI 3.1 specifications 
+    using natural language descriptions. This API provides endpoints to:
+    
+    - **Generate** OpenAPI specs from natural language descriptions
+    - **Validate** OpenAPI 3.1 specifications for correctness
+    - **Dereference** and **bundle** OpenAPI specs with external references
+    
+    All endpoints return JSON responses with appropriate HTTP status codes.
+  version: 0.0.1
+  contact:
+    name: API Support
+  license:
+    name: MIT
+    identifier: MIT
+
+servers:
+  - url: http://localhost:3001
+    description: Local development server
+  - url: http://localhost:3000
+    description: Alternative local port
+
+tags:
+  - name: Health
+    description: Health check and status endpoints
+  - name: Validation
+    description: OpenAPI 3.1 specification validation and processing
+  - name: Generation
+    description: Natural language to OpenAPI 3.1 generation
+
+paths:
+  /:
+    get:
+      summary: API Information
+      description: Returns basic information about the API including available endpoints
+      operationId: getApiInfo
+      tags:
+        - Health
+      responses:
+        '200':
+          description: API information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiInfo'
+              example:
+                name: Natural Language OpenAPI Editor API
+                version: 0.0.1
+                status: running
+                endpoints:
+                  validation: /api/validate
+                  generation: /api/generate
+                  health: /api/health
+
+  /api/health:
+    get:
+      summary: Health Check
+      description: Returns the health status of the API and its dependent services
+      operationId: getHealth
+      tags:
+        - Health
+      responses:
+        '200':
+          description: Health status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+              example:
+                status: ok
+                timestamp: '2024-01-15T10:30:00Z'
+                version: 0.0.1
+                services:
+                  copilot: connected
+                  validation: ok
+
+  /api/validate:
+    post:
+      summary: Validate OpenAPI Specification
+      description: |
+        Validates an OpenAPI 3.1.x specification for structural 
+        and semantic correctness. Returns detailed validation errors if invalid.
+      operationId: validateSpec
+      tags:
+        - Validation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidationRequest'
+            examples:
+              yaml-string:
+                summary: YAML string input
+                value:
+                  spec: |
+                    openapi: 3.1.0
+                    info:
+                      title: My API
+                      version: 1.0.0
+                    paths: {}
+              json-object:
+                summary: JSON object input
+                value:
+                  spec:
+                    openapi: '3.1.0'
+                    info:
+                      title: My API
+                      version: '1.0.0'
+                    paths: {}
+      responses:
+        '200':
+          description: Validation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationResponse'
+              example:
+                valid: true
+                version: '3.1.0'
+                errors: []
+                spec:
+                  openapi: '3.1.0'
+                  info:
+                    title: My API
+                    version: '1.0.0'
+                  paths: {}
+        '400':
+          description: Validation failed - spec is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationResponse'
+              example:
+                valid: false
+                errors:
+                  - message: 'Missing required field: paths'
+                    severity: error
+                    path: []
+        '500':
+          description: Server error during validation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/validate/dereference:
+    post:
+      summary: Dereference OpenAPI Specification
+      description: |
+        Resolves all `$ref` pointers in an OpenAPI specification, including external 
+        file references. Returns a fully dereferenced spec where all references are 
+        replaced with their actual content.
+      operationId: dereferenceSpec
+      tags:
+        - Validation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidationRequest'
+      responses:
+        '200':
+          description: Dereferencing successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DereferenceResponse'
+              example:
+                success: true
+                spec:
+                  openapi: '3.1.0'
+                  info:
+                    title: My API
+                    version: '1.0.0'
+                  paths: {}
+        '500':
+          description: Dereferencing failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/validate/bundle:
+    post:
+      summary: Bundle OpenAPI Specification
+      description: |
+        Bundles all external references into a single OpenAPI specification while 
+        maintaining `$ref` pointers for internal references. Useful for creating 
+        portable spec files.
+      operationId: bundleSpec
+      tags:
+        - Validation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidationRequest'
+      responses:
+        '200':
+          description: Bundling successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BundleResponse'
+              example:
+                success: true
+                spec:
+                  openapi: '3.1.0'
+                  info:
+                    title: My API
+                    version: '1.0.0'
+                  paths: {}
+        '500':
+          description: Bundling failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/generate:
+    post:
+      summary: Generate OpenAPI Specification
+      description: |
+        Generates an OpenAPI 3.1 specification from a natural language description.
+        
+        **Modes:**
+        - `create`: Generate a new spec from scratch
+        - `modify`: Modify an existing spec based on change requests
+        
+        When using `modify` mode, provide the `existingSpec` parameter with the 
+        current OpenAPI specification as a YAML string.
+      operationId: generateSpec
+      tags:
+        - Generation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerationRequest'
+            examples:
+              create:
+                summary: Create new API
+                value:
+                  description: A REST API for a blog with posts, comments, and users
+                  mode: create
+              modify:
+                summary: Modify existing API
+                value:
+                  description: Add a DELETE endpoint for users and add pagination to the GET /posts endpoint
+                  existingSpec: |
+                    openapi: 3.1.0
+                    info:
+                      title: Blog API
+                      version: 1.0.0
+                    paths:
+                      /users:
+                        get:
+                          summary: List users
+                          responses:
+                            '200':
+                              description: Success
+                  mode: modify
+      responses:
+        '200':
+          description: Generation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenerationResponse'
+              example:
+                spec: |
+                  openapi: 3.1.0
+                  info:
+                    title: Blog API
+                    version: 1.0.0
+                  paths:
+                    /posts:
+                      get:
+                        summary: List posts
+                        responses:
+                          '200':
+                            description: Success
+                format: yaml
+                version: '3.1.0'
+                message: Spec generated successfully
+        '500':
+          description: Generation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+
+components:
+  schemas:
+    ApiInfo:
+      type: object
+      required:
+        - name
+        - version
+        - status
+        - endpoints
+      properties:
+        name:
+          type: string
+          description: API name
+        version:
+          type: string
+          description: API version
+        status:
+          type: string
+          enum: [running]
+          description: Current API status
+        endpoints:
+          type: object
+          description: Available API endpoints
+          additionalProperties:
+            type: string
+
+    HealthResponse:
+      type: object
+      required:
+        - status
+        - timestamp
+        - version
+        - services
+      properties:
+        status:
+          type: string
+          enum: [ok, degraded, error]
+          description: Overall health status
+        timestamp:
+          type: string
+          format: date-time
+          description: Current server timestamp
+        version:
+          type: string
+          description: API version
+        services:
+          type: object
+          required:
+            - copilot
+            - validation
+          properties:
+            copilot:
+              type: string
+              enum: [connected, disconnected]
+              description: GitHub Copilot SDK connection status
+            validation:
+              type: string
+              enum: [ok, error]
+              description: Validation service status
+
+    ValidationRequest:
+      type: object
+      required:
+        - spec
+      properties:
+        spec:
+          oneOf:
+            - type: string
+              description: OpenAPI spec as YAML or JSON string
+            - type: object
+              description: OpenAPI spec as JSON object
+        format:
+          type: string
+          enum: [yaml, json]
+          description: Format hint for string input
+
+    ValidationResponse:
+      type: object
+      required:
+        - valid
+        - errors
+      properties:
+        valid:
+          type: boolean
+          description: Whether the spec is valid
+        version:
+          type: string
+          description: Detected OpenAPI version (e.g., '3.1.0')
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          description: List of validation errors (empty if valid)
+        spec:
+          type: object
+          description: Parsed specification object
+
+    ValidationError:
+      type: object
+      required:
+        - message
+        - severity
+      properties:
+        message:
+          type: string
+          description: Error message
+        path:
+          type: array
+          items:
+            type: string
+          description: Path to the error location in the spec
+        line:
+          type: integer
+          description: Line number where error occurred (if available)
+        column:
+          type: integer
+          description: Column number where error occurred (if available)
+        severity:
+          type: string
+          enum: [error, warning]
+          description: Error severity level
+
+    DereferenceResponse:
+      type: object
+      required:
+        - success
+        - spec
+      properties:
+        success:
+          type: boolean
+          description: Whether dereferencing succeeded
+        spec:
+          type: object
+          description: Fully dereferenced OpenAPI specification
+        error:
+          type: string
+          description: Error message if dereferencing failed
+
+    BundleResponse:
+      type: object
+      required:
+        - success
+        - spec
+      properties:
+        success:
+          type: boolean
+          description: Whether bundling succeeded
+        spec:
+          type: object
+          description: Bundled OpenAPI specification
+        error:
+          type: string
+          description: Error message if bundling failed
+
+    GenerationRequest:
+      type: object
+      required:
+        - description
+      properties:
+        description:
+          type: string
+          minLength: 10
+          description: Natural language description of the API
+        existingSpec:
+          type: string
+          description: Current OpenAPI spec as YAML string (required for modify mode)
+        mode:
+          type: string
+          enum: [create, modify]
+          default: create
+          description: Generation mode
+
+    GenerationResponse:
+      type: object
+      required:
+        - spec
+        - format
+        - version
+      properties:
+        spec:
+          type: string
+          description: Generated OpenAPI specification as YAML
+        format:
+          type: string
+          enum: [yaml]
+          description: Output format
+        version:
+          type: string
+          description: OpenAPI version of the generated spec
+        message:
+          type: string
+          description: Additional information or warnings
+
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          description: Error type or title
+        message:
+          type: string
+          description: Detailed error message
+
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error: Not found
+            message: The requested endpoint does not exist
+    
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error: Internal server error
+            message: An unexpected error occurred
