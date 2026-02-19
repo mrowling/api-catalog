@@ -4,7 +4,7 @@
  */
 
 import type { AIMessage } from '@ai-openapi/shared';
-import { AIProviderFactory } from '../ai/provider-factory.js';
+import { AIProviderFactory } from '@ai-openapi/shared';
 import { config } from '../config.js';
 
 const SYSTEM_PROMPT = `You are an expert at creating OpenAPI 3.1 specifications.
@@ -58,8 +58,12 @@ export class GenerationService {
    */
   async generate(options: GenerateOptions): Promise<string> {
     const provider = AIProviderFactory.getProvider({
+      provider: config.aiProvider as any,
       defaultModel: config.aiModel,
-    });
+      openRouterApiKey: config.openRouterApiKey,
+      openRouterSiteUrl: config.openRouterSiteUrl,
+      openRouterSiteName: config.openRouterSiteName,
+    } as any);
 
     if (!provider.isConfigured()) {
       throw new Error('AI provider is not configured');

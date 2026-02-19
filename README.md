@@ -11,7 +11,7 @@ An AI-powered OpenAPI specification editor that allows you to describe APIs in n
 - **Version Conversion**: Automatic OpenAPI 3.0 to 3.1 conversion
 - **Web UI**: Modern React interface with Swagger UI integration
 - **CLI Tool**: Command-line interface for automation and CI/CD
-- **GitHub Copilot SDK**: Powered by GitHub's Copilot AI for intelligent generation
+- **Multiple AI Providers**: Powered by GitHub Copilot or OpenRouter.ai (100+ models)
 - **Monorepo with Turborepo**: Fast builds with intelligent caching and parallel execution
 
 ## Quick Start
@@ -20,8 +20,9 @@ An AI-powered OpenAPI specification editor that allows you to describe APIs in n
 
 - [Node.js](https://nodejs.org/) (v22 or later)
 - [pnpm](https://pnpm.io/) (v8 or later)
-- [GitHub Copilot CLI](https://docs.github.com/en/copilot/github-copilot-in-the-cli) (standalone version)
-- Active GitHub Copilot subscription
+- **AI Provider** (choose one):
+  - [GitHub Copilot CLI](https://docs.github.com/en/copilot/github-copilot-in-the-cli) with active subscription, OR
+  - [OpenRouter.ai](https://openrouter.ai/) API key (free tier available)
 - (Optional) GitHub Personal Access Token for organization spec discovery
 
 ### Installation
@@ -40,7 +41,9 @@ pnpm run build
 
 ### Configuration
 
-1. **Set up GitHub Copilot CLI** (required for AI generation):
+1. **Choose your AI provider**:
+
+   **Option A: GitHub Copilot** (requires subscription)
    ```bash
    # Install standalone Copilot CLI
    brew install github/copilot-cli/copilot  # macOS
@@ -52,6 +55,19 @@ pnpm run build
    ```
    
    See [docs/COPILOT_SETUP.md](docs/COPILOT_SETUP.md) for detailed setup instructions.
+
+   **Option B: OpenRouter** (free tier available, 100+ models)
+   
+   Get your API key at https://openrouter.ai/keys
+   
+   Add to `apps/api/.env`:
+   ```bash
+   AI_PROVIDER=openrouter
+   OPENROUTER_API_KEY=your_api_key_here
+   AI_MODEL=openai/gpt-4-turbo  # or any supported model
+   ```
+   
+   See [docs/OPENROUTER_SETUP.md](docs/OPENROUTER_SETUP.md) for detailed setup instructions.
 
 2. **Configure GitHub authentication** (optional, for organization discovery):
    
@@ -115,7 +131,9 @@ Automatically discover and import OpenAPI specs from GitHub organizations:
 
 See [docs/GITHUB_DISCOVERY.md](docs/GITHUB_DISCOVERY.md) for detailed setup and configuration.
 
-### GitHub Copilot Setup
+### AI Provider Setup
+
+#### GitHub Copilot
 
 **Required for AI generation features:**
 
@@ -135,6 +153,21 @@ gh copilot --version
 ```
 
 See [docs/COPILOT_SETUP.md](docs/COPILOT_SETUP.md) for detailed setup instructions and troubleshooting.
+
+#### OpenRouter
+
+**Alternative AI provider with 100+ models:**
+
+1. Get your API key at [https://openrouter.ai/keys](https://openrouter.ai/keys)
+
+2. Configure in `apps/api/.env`:
+```bash
+AI_PROVIDER=openrouter
+OPENROUTER_API_KEY=your_api_key_here
+AI_MODEL=openai/gpt-4-turbo  # or any model
+```
+
+See [docs/OPENROUTER_SETUP.md](docs/OPENROUTER_SETUP.md) for model recommendations, pricing, and troubleshooting.
 
 ## Project Structure
 
@@ -282,7 +315,7 @@ cd packages/shared && bun add <package>
 - **Runtime**: Bun
 - **Backend**: Hono, @apidevtools/swagger-parser
 - **Frontend**: React 19, Vite, Tailwind CSS
-- **AI**: GitHub Copilot SDK
+- **AI**: GitHub Copilot SDK or OpenRouter.ai (100+ models)
 - **CLI**: Commander.js
 
 ## Contributing
