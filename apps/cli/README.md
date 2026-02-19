@@ -1,275 +1,148 @@
-# Natural Language OpenAPI CLI
+# OpenAPI CLI
 
-Command-line tool for discovering, generating, and managing OpenAPI 3.1 specifications.
+Browse, generate, and manage OpenAPI specs from your terminal.
 
-## Features
-
-- 🔍 **Discover** OpenAPI specs in GitHub organizations
-- 🤖 **Generate** specs from natural language descriptions
-- ✅ **Validate** existing OpenAPI specifications
-- 📝 **Open** specs in your editor or openapi-tui
-- 💻 **Interactive** and scriptable workflows
-
-## Installation
+## Quick Start
 
 ```bash
-# From the project root
-pnpm install
+# From project root
+pnpm install && pnpm build
 
-# Build the CLI
+# Run the CLI
 cd apps/cli
-pnpm build
+pnpm start browse   # Interactive mode
 ```
 
-## Authentication
-
-The CLI uses GitHub's API to search for OpenAPI specs. To avoid rate limits, authenticate using one of these methods:
-
-1. **GitHub CLI** (recommended):
-   ```bash
-   gh auth login
-   ```
-
-2. **Environment variable**:
-   ```bash
-   export GITHUB_TOKEN=your_token_here
-   ```
-
-Without authentication, you're limited to 60 requests/hour.
-
-## Usage
-
-### Interactive Browse
-
-The easiest way to discover and open specs:
+## What Can You Do?
 
 ```bash
+# Browse GitHub specs interactively
 pnpm start browse
-# OR
-node dist/index.js browse
-```
 
-This will:
-1. Prompt you for a GitHub organization name
-2. Search for all OpenAPI specs in that org
-3. Let you select a spec interactively
-4. Ask how you want to open it (editor, openapi-tui, save to file, or print)
-
-### List Specs
-
-List all OpenAPI specs in an organization:
-
-```bash
-pnpm start list <org>
-```
-
-Example:
-```bash
+# List specs in an organization  
 pnpm start list stripe
-```
 
-### Open a Spec
+# Open a specific spec
+pnpm start open stripe 1
 
-Open a specific spec by its index from the list:
+# Generate from natural language
+pnpm start generate "A blog API with posts and comments" -o blog.yaml
 
-```bash
-pnpm start open <org> <index>
-```
-
-Example:
-```bash
-pnpm start list stripe  # Shows numbered list
-pnpm start open stripe 1  # Opens the first spec
-```
-
-### Generate from Natural Language
-
-Generate an OpenAPI spec from a natural language description:
-
-```bash
-pnpm start generate "A REST API for managing blog posts with CRUD operations"
-
-# Save to file
-pnpm start generate "A todo list API" -o todo-api.yaml
-
-# Use a specific AI model
-pnpm start generate "A user management API" -m gpt-5-mini
-```
-
-### Validate OpenAPI Specification
-
-Validate an existing OpenAPI specification file:
-
-```bash
+# Validate a spec
 pnpm start validate ./api.yaml
 ```
 
-## Opening Methods
+## Browse Command (Interactive)
 
-When you select a spec with `browse` or `open`, you can:
+The easiest way to explore GitHub specs:
 
-1. **Open in $EDITOR** - Opens the spec in your default editor (vi, vim, nano, etc.)
-2. **Open in openapi-tui** - Opens in [openapi-tui](https://github.com/zaghaghi/openapi-tui) (if installed)
-3. **Save to file** - Downloads and saves the spec to a local file
-4. **Print to console** - Displays the spec content in your terminal
-
-### Installing openapi-tui
-
-The CLI will prompt you to install openapi-tui if it's not found. You can also install it manually:
-
-**Quick install (recommended):**
 ```bash
-bash apps/cli/scripts/install-openapi-tui.sh
-```
-
-**With Cargo:**
-```bash
-cargo install openapi-tui
-```
-
-**With Homebrew (macOS):**
-```bash
-brew install openapi-tui
-```
-
-See [scripts/README.md](scripts/README.md) for more installation options.
-
-## Examples
-
-### Interactive workflow
-```bash
-# Browse and explore specs interactively
 pnpm start browse
-> Enter GitHub organization name: stripe
-> Select an OpenAPI spec: stripe-api - openapi/spec3.yaml
-> How would you like to open this spec? Open in $EDITOR
 ```
 
-### Scripted workflow
+**What it does:**
+1. Asks for a GitHub organization name
+2. Shows all OpenAPI specs found
+3. Lets you pick one
+4. Opens it how you want (editor, openapi-tui, file, or console)
+5. Loops back to menu for more actions
+
+**Opening options:**
+- **$EDITOR** - Opens in vi/vim/nano/etc
+- **openapi-tui** - Beautiful TUI viewer (auto-installs if needed)
+- **Save to file** - Downloads to your computer
+- **Print** - Shows in terminal
+
+## List & Open Commands (Scriptable)
+
+Perfect for automation and scripts:
+
 ```bash
-# List all specs in an org
+# List all specs (outputs numbered list)
 pnpm start list github
 
-# Open the 3rd spec from the list
+# Open by number
 pnpm start open github 3
 ```
 
-## Configuration
+## Generate Command
 
-The CLI uses the same AI provider as the API server (GitHub Copilot with gpt-5-mini by default).
-
-You can override the model with the `-m` or `--model` option:
+Create specs from plain English:
 
 ```bash
-pnpm start generate "My API description" -m gpt-4o
-```
-
-## Commands Reference
-
-### `browse`
-
-Interactively discover and open OpenAPI specs in GitHub organizations.
-
-```bash
-pnpm start browse
-```
-
-### `list <org>`
-
-List all OpenAPI specs in a GitHub organization.
-
-**Arguments:**
-- `org` - GitHub organization name
-
-**Examples:**
-```bash
-pnpm start list stripe
-pnpm start list github
-```
-
-### `open <org> <index>`
-
-Open a specific OpenAPI spec from a GitHub organization.
-
-**Arguments:**
-- `org` - GitHub organization name
-- `index` - Spec index from list command (1-based)
-
-**Examples:**
-```bash
-pnpm start open stripe 1
-pnpm start open github 5
-```
-
-### `generate <description> [options]`
-
-Generate an OpenAPI 3.1 specification from natural language.
-
-**Arguments:**
-- `description` - Natural language description of your API
-
-**Options:**
-- `-o, --output <file>` - Output file (defaults to stdout)
-- `-m, --model <model>` - AI model to use (default: gpt-5-mini)
-
-**Examples:**
-
-```bash
-# Generate and print to stdout
-pnpm start generate "A weather API with current conditions and forecasts"
+# Print to terminal
+pnpm start generate "A weather API with forecasts"
 
 # Save to file
-pnpm start generate "An e-commerce API" -o ecommerce.yaml
+pnpm start generate "An e-commerce API" -o shop.yaml
 
-# Use different model
-pnpm start generate "A booking system API" -m gpt-4o -o booking.yaml
+# Use a specific model
+pnpm start generate "A booking API" -m gpt-4o -o booking.yaml
 ```
 
-### `validate <file>`
+## Validate Command
 
-Validate an OpenAPI specification file.
-
-**Arguments:**
-- `file` - Path to OpenAPI specification file (YAML or JSON)
-
-**Examples:**
+Check if a spec is valid:
 
 ```bash
 pnpm start validate ./api.yaml
 pnpm start validate ./openapi.json
 ```
 
-## Tips
+## Installing openapi-tui (Optional)
 
-- The CLI searches for files named: `openapi.yaml`, `openapi.yml`, `swagger.yaml`, `swagger.yml`
-- **Shared cache**: Results are cached in `~/.ai-openapi-cache/cache.db` and shared with the API server
-- Cache TTL is 5 minutes - subsequent searches use cached data for faster results
-- Use `browse` for exploration, `list`/`open` for scripting and automation
-- Install [openapi-tui](https://github.com/zaghaghi/openapi-tui) for a better viewing experience
+For a better viewing experience, install [openapi-tui](https://github.com/zaghaghi/openapi-tui).
 
-## Development
+The CLI will offer to install it automatically when needed, or install manually:
 
 ```bash
-# Run in development mode (with watch)
-pnpm dev
+# Quick install (recommended)
+bash apps/cli/scripts/install-openapi-tui.sh
 
-# Build
-pnpm build
+# Or with cargo
+cargo install openapi-tui --git https://github.com/zaghaghi/openapi-tui.git
 
-# Type check
-pnpm typecheck
+# Or with Homebrew (macOS)
+brew install openapi-tui
 ```
+
+## GitHub Authentication (Optional)
+
+To avoid rate limits (60 requests/hour), authenticate:
+
+```bash
+# With GitHub CLI (easiest)
+gh auth login
+
+# Or set a token
+export GITHUB_TOKEN=your_token_here
+```
+
+Get tokens at: https://github.com/settings/tokens (need `public_repo` scope)
+
+## Tips
+
+- **Cache is shared** with the web UI at `~/.ai-openapi-cache/cache.db`
+- **Search results cached** for 5 minutes (faster repeat searches)
+- **Searches for**: `openapi.yaml`, `openapi.yml`, `swagger.yaml`, `swagger.yml`
+- **Use browse** for exploring, **list/open** for scripts and automation
 
 ## Global Installation (Optional)
 
-To use the CLI globally:
+Use the CLI from anywhere:
 
 ```bash
 cd apps/cli
 pnpm link -g
 
-# Now you can use it anywhere
+# Now use it globally
 nl-openapi browse
 nl-openapi list stripe
-nl-openapi generate "My API description"
+nl-openapi generate "My API"
 ```
+
+## Need Help?
+
+- Main docs: [../../README.md](../../README.md)
+- Install script: [scripts/README.md](scripts/README.md)
+- Issues: Open an issue on GitHub
