@@ -251,7 +251,7 @@ export class AgenticGenerationService {
         validationAttempt++;
 
         if (validationAttempt >= this.MAX_VALIDATION_FIX_ATTEMPTS) {
-          console.log('[AgenticGeneration] Max validation fix attempts reached');
+          console.log('[AgenticGeneration] Max validation fix attempts reached, returning spec anyway');
           // Return spec with validation errors
           const errorMessages = validationResult.errors.map(e => {
             const location = e.line ? ` (line ${e.line})` : '';
@@ -261,13 +261,20 @@ export class AgenticGenerationService {
           yield {
             type: 'error',
             error: `Validation errors:\n- ${errorMessages}`,
-            message: 'Generated spec has validation errors that could not be auto-fixed',
+            message: 'Generated spec has validation errors that could not be auto-fixed. Returning spec anyway.',
             validationErrors: validationResult.errors.map(e => ({
               message: e.message,
               line: e.line,
               column: e.column,
               path: e.path
             }))
+          };
+          
+          // Still send the spec to the user so they can see and manually fix it
+          yield {
+            type: 'result',
+            spec,
+            message: 'Spec generated with validation errors'
           };
           return;
         }
