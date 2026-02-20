@@ -1,0 +1,106 @@
+# Pagination Pattern
+
+## Usage
+Copy the relevant schemas and parameters into your spec's components section.
+
+## Types Available
+- Offset-based pagination (page/limit)
+- Cursor-based pagination (next/previous cursors)
+
+## Implementation
+1. Add pagination parameters to list endpoints
+2. Add PaginationInfo schema to response
+3. Update response to include pagination metadata
+
+components:
+  parameters:
+    PageParam:
+      name: page
+      in: query
+      description: Page number (1-indexed)
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+
+    LimitParam:
+      name: limit
+      in: query
+      description: Number of items per page
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+
+    CursorParam:
+      name: cursor
+      in: query
+      description: Cursor for pagination
+      schema:
+        type: string
+
+  schemas:
+    # Offset-based pagination
+    OffsetPagination:
+      type: object
+      required:
+        - page
+        - limit
+        - total
+      properties:
+        page:
+          type: integer
+          description: Current page number
+          example: 1
+        limit:
+          type: integer
+          description: Items per page
+          example: 20
+        total:
+          type: integer
+          description: Total number of items
+          example: 150
+        totalPages:
+          type: integer
+          description: Total number of pages
+          example: 8
+        hasNext:
+          type: boolean
+          description: Whether there is a next page
+        hasPrevious:
+          type: boolean
+          description: Whether there is a previous page
+
+    # Cursor-based pagination
+    CursorPagination:
+      type: object
+      properties:
+        nextCursor:
+          type: string
+          description: Cursor for the next page
+          nullable: true
+        previousCursor:
+          type: string
+          description: Cursor for the previous page
+          nullable: true
+        hasNext:
+          type: boolean
+          description: Whether there are more items
+        hasPrevious:
+          type: boolean
+          description: Whether there are previous items
+
+    # Paginated response wrapper
+    PaginatedResponse:
+      type: object
+      required:
+        - data
+        - pagination
+      properties:
+        data:
+          type: array
+          items: {}
+          description: Array of items (replace with specific schema)
+        pagination:
+          $ref: '#/components/schemas/OffsetPagination'

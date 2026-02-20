@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
-import { validateSpec, generateSpec } from '../generated/api/sdk.gen';
+import { validateSpec } from '../generated/api/sdk.gen';
 import type { ValidationResponse } from '../generated/api/types.gen';
-import { NaturalLanguageInput } from './NaturalLanguageInput';
+import { ChatPanel } from './Chat';
 import { SwaggerPreview } from './SwaggerPreview';
 import { ValidationStatus } from './ValidationStatus';
 import { Toolbar } from './Toolbar';
@@ -26,8 +26,9 @@ export function EditorPage({ initialSpec }: EditorPageProps) {
     }
   });
   const [validationResult, setValidationResult] = useState<ValidationResponse | null>(null);
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+
+  // Determine mode based on whether we have a spec
+  const mode: 'create' | 'modify' = currentSpec ? 'modify' : 'create';
 
   // Update spec when initialSpec changes (from catalog)
   useEffect(() => {
@@ -57,30 +58,11 @@ export function EditorPage({ initialSpec }: EditorPageProps) {
     }
   }, []); // Only run on mount
 
-  const handleGenerate = useCallback(async (description: string, mode: 'create' | 'modify') => {
-    setIsGenerating(true);
-    setError(null);
-    
-    try {
-      const result = await generateSpec({
-        body: {
-          description,
-          mode,
-          existingSpec: mode === 'modify' ? currentSpec : undefined,
-        },
-      });
-      
-      if (result.data) {
-        setCurrentSpec(result.data.spec);
-        // Auto-validate the generated spec
-        await handleValidate(result.data.spec);
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to generate spec');
-    } finally {
-      setIsGenerating(false);
-    }
-  }, [currentSpec]);
+  const handleSpecUpdate = useCallback((spec: string) => {
+    setCurrentSpec(spec);
+    // Auto-validate the updated spec
+    handleValidate(spec);
+  }, []);
 
   const handleValidate = useCallback(async (spec: string) => {
     try {
@@ -130,7 +112,6 @@ export function EditorPage({ initialSpec }: EditorPageProps) {
     if (window.confirm('Are you sure you want to clear the editor? This cannot be undone.')) {
       setCurrentSpec('');
       setValidationResult(null);
-      setError(null);
     }
   }, []);
 
@@ -140,23 +121,17 @@ export function EditorPage({ initialSpec }: EditorPageProps) {
         <h1>Natural Language OpenAPI Editor</h1>
         <ValidationStatus 
           validation={validationResult} 
-          isGenerating={isGenerating}
+          isGenerating={false}
         />
       </header>
 
       <div className="editor-container">
         <aside className="editor-sidebar">
-          <NaturalLanguageInput
-            onGenerate={handleGenerate}
-            isGenerating={isGenerating}
+          <ChatPanel
             currentSpec={currentSpec}
+            onSpecUpdate={handleSpecUpdate}
+            mode={mode}
           />
-          
-          {error && (
-            <div className="error-message">
-              {error}
-            </div>
-          )}
         </aside>
 
         <main className="editor-main">

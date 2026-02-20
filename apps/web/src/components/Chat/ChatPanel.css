@@ -1,0 +1,25 @@
+/* Chat Panel Container */
+.chat-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--bg-primary);
+  border-left: 1px solid var(--border-primary);
+}
+
+/* Chat Header */
+.chat-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-primary);
+  color: var(--text-primary);
+}
+
+.chat-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}

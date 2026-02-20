@@ -1,0 +1,111 @@
+# Authentication Patterns
+
+## Usage
+Copy the relevant security schemes into your spec's components section.
+Apply security requirements to protected endpoints.
+
+## Types Available
+- Bearer Token (JWT)
+- API Key (Header or Query)
+- OAuth 2.0
+- HTTP Basic Auth
+
+components:
+  securitySchemes:
+    # Bearer Token (JWT)
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        JWT authentication. Include the token in the Authorization header:
+        `Authorization: Bearer <token>`
+
+    # API Key in Header
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: |
+        API Key authentication. Include your API key in the X-API-Key header:
+        `X-API-Key: <your-api-key>`
+
+    # API Key in Query Parameter
+    apiKeyQuery:
+      type: apiKey
+      in: query
+      name: api_key
+      description: |
+        API Key authentication via query parameter:
+        `?api_key=<your-api-key>`
+
+    # OAuth 2.0 with multiple flows
+    oauth2:
+      type: oauth2
+      description: OAuth 2.0 authentication
+      flows:
+        authorizationCode:
+          authorizationUrl: https://auth.example.com/oauth/authorize
+          tokenUrl: https://auth.example.com/oauth/token
+          scopes:
+            read: Read access to resources
+            write: Write access to resources
+            admin: Administrative access
+        clientCredentials:
+          tokenUrl: https://auth.example.com/oauth/token
+          scopes:
+            read: Read access to resources
+            write: Write access to resources
+
+    # HTTP Basic Authentication
+    basicAuth:
+      type: http
+      scheme: basic
+      description: |
+        Basic authentication using username and password.
+        Credentials are base64 encoded in the Authorization header:
+        `Authorization: Basic <base64(username:password)>`
+
+# Usage Examples:
+
+# Apply to all operations globally (add to root level):
+# security:
+#   - bearerAuth: []
+
+# Apply to specific operations:
+# paths:
+#   /protected:
+#     get:
+#       security:
+#         - bearerAuth: []
+#       responses:
+#         '200':
+#           description: Success
+#         '401':
+#           $ref: '#/components/responses/Unauthorized'
+
+# Multiple authentication options (OR logic):
+# paths:
+#   /flexible:
+#     get:
+#       security:
+#         - bearerAuth: []
+#         - apiKeyAuth: []
+#       # User can authenticate with either bearer token OR API key
+
+# Multiple requirements (AND logic):
+# paths:
+#   /strict:
+#     get:
+#       security:
+#         - bearerAuth: []
+#           apiKeyAuth: []
+#       # User must provide both bearer token AND API key
+
+# OAuth with specific scopes:
+# paths:
+#   /admin:
+#     post:
+#       security:
+#         - oauth2: [admin, write]
+#       # Requires 'admin' and 'write' scopes

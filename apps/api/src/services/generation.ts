@@ -106,13 +106,20 @@ export class GenerationService {
     // Clean up the response (remove markdown code blocks if present)
     let spec = result.content.trim();
     
+    // Debug: Log the raw response
+    console.log('🔍 Raw AI response (first 500 chars):', spec.substring(0, 500));
+    
     // Remove markdown code blocks
     spec = spec.replace(/^```ya?ml\n/i, '');
     spec = spec.replace(/\n```$/,  '');
     spec = spec.trim();
 
+    console.log('🔍 After cleanup (first 200 chars):', spec.substring(0, 200));
+
     // Validate it starts with openapi
     if (!spec.startsWith('openapi:')) {
+      console.error('❌ Generated spec does not start with "openapi:"');
+      console.error('First 100 chars:', spec.substring(0, 100));
       throw new Error('Generated content does not appear to be a valid OpenAPI spec');
     }
 

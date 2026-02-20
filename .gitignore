@@ -18,6 +18,11 @@ dist-ssr
 # SQLite cache
 .ai-openapi-cache/
 
+# Environment variables
+.env
+.env.local
+.env.*.local
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

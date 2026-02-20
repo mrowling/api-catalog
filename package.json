@@ -17,7 +17,8 @@
     "test:watch": "turbo run test:watch",
     "test:coverage": "turbo run test:coverage",
     "cli": "cd apps/cli && pnpm start",
-    "clean": "turbo run clean && rm -rf node_modules .turbo"
+    "clean": "turbo run clean && rm -rf node_modules .turbo",
+    "stop-dev": "pkill -f \"pnpm.*dev\" && pkill -f \"tsx watch\" && pkill -f \"vite\" && sleep 2"
   },
   "devDependencies": {
     "@hey-api/openapi-ts": "^0.92.4",

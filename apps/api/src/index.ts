@@ -12,6 +12,7 @@ import { logger } from 'hono/logger';
 import { serve } from '@hono/node-server';
 import { validationRoutes } from './routes/validation.js';
 import { generationRoutes } from './routes/generation.js';
+import { conversationRoutes } from './routes/conversation.js';
 import { healthRoutes } from './routes/health.js';
 import { githubRoutes } from './routes/github.js';
 
@@ -28,6 +29,7 @@ app.use('*', cors({
 // Routes
 app.route('/api/validate', validationRoutes);
 app.route('/api/generate', generationRoutes);
+app.route('/api/conversation', conversationRoutes);
 app.route('/api/github', githubRoutes);
 app.route('/api/health', healthRoutes);
 
@@ -40,6 +42,7 @@ app.get('/', (c) => {
     endpoints: {
       validation: '/api/validate',
       generation: '/api/generate',
+      conversation: '/api/conversation',
       github: '/api/github',
       health: '/api/health'
     }

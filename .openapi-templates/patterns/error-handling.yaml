@@ -1,0 +1,152 @@
+# Error Handling Pattern (RFC 7807 Problem Details)
+
+## Usage
+Copy the Error schema into your spec's components section.
+Reference it in error responses (400, 401, 403, 404, 500, etc.)
+
+## Features
+- RFC 7807 compliant Problem Details format
+- Structured error responses
+- Support for validation errors
+- Human-readable messages
+
+components:
+  schemas:
+    # Standard error response (RFC 7807)
+    Error:
+      type: object
+      required:
+        - type
+        - title
+        - status
+      properties:
+        type:
+          type: string
+          format: uri
+          description: URI reference identifying the problem type
+          example: https://api.example.com/errors/validation-error
+        title:
+          type: string
+          description: Short, human-readable summary
+          example: Validation Error
+        status:
+          type: integer
+          description: HTTP status code
+          example: 400
+        detail:
+          type: string
+          description: Human-readable explanation
+          example: The request body contains invalid fields
+        instance:
+          type: string
+          format: uri
+          description: URI reference identifying the specific occurrence
+          example: /api/users/123
+        errors:
+          type: array
+          description: Detailed validation errors
+          items:
+            $ref: '#/components/schemas/ValidationError'
+
+    ValidationError:
+      type: object
+      required:
+        - field
+        - message
+      properties:
+        field:
+          type: string
+          description: Field that failed validation
+          example: email
+        message:
+          type: string
+          description: Validation error message
+          example: Must be a valid email address
+        code:
+          type: string
+          description: Error code
+          example: INVALID_EMAIL
+
+    # Simple error (if RFC 7807 is too complex)
+    SimpleError:
+      type: object
+      required:
+        - error
+        - message
+      properties:
+        error:
+          type: string
+          description: Error code
+          example: VALIDATION_ERROR
+        message:
+          type: string
+          description: Human-readable error message
+          example: Invalid request parameters
+        details:
+          type: object
+          description: Additional error context
+
+  responses:
+    BadRequest:
+      description: Bad request - validation errors
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            type: https://api.example.com/errors/validation-error
+            title: Validation Error
+            status: 400
+            detail: The request contains invalid fields
+            errors:
+              - field: email
+                message: Must be a valid email address
+                code: INVALID_EMAIL
+
+    Unauthorized:
+      description: Unauthorized - authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            type: https://api.example.com/errors/unauthorized
+            title: Unauthorized
+            status: 401
+            detail: Authentication credentials are required
+
+    Forbidden:
+      description: Forbidden - insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            type: https://api.example.com/errors/forbidden
+            title: Forbidden
+            status: 403
+            detail: You do not have permission to access this resource
+
+    NotFound:
+      description: Not found - resource does not exist
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            type: https://api.example.com/errors/not-found
+            title: Not Found
+            status: 404
+            detail: The requested resource was not found
+
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            type: https://api.example.com/errors/internal-error
+            title: Internal Server Error
+            status: 500
+            detail: An unexpected error occurred
